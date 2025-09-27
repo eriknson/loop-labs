@@ -74,7 +74,7 @@ ${promptBody}`;
 
     // Call OpenAI with web browsing capabilities (GPT-4o-mini first for higher token limits, then fallback)
     let response;
-    const models = ['gpt-4o-mini', 'gpt-4o']; // Start with GPT-4o-mini for higher token limits
+    const models = ['gpt-5', 'gpt-4o']; // Start with GPT-4o-mini for higher token limits
     
     for (const model of models) {
       try {
