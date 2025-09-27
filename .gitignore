@@ -17,6 +17,10 @@ out/
 build/
 dist/
 
+# Python
+__pycache__/
+venv/
+
 # Vercel
 .vercel
 

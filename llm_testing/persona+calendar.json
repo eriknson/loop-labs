@@ -1,0 +1,39 @@
+{
+  "persona": {
+    "name": "Erik",
+    "field": "design",
+    "city": "Lisbon",
+    "country": "Portugal",
+    "interests": ["design", "AI", "meetups"],
+    "timezone": "Europe/Lisbon",
+    "description": "A professional in design, based in Lisbon, Portugal. Typically starts the day at 09:30 and ends by 17:30, with quiet hours from 23:00 to 08:00. Frequently collaborates with Johan from Freym and team members from Yeet. Interests include design, tech meetups, and social events. Regularly visits AIhub and IDEA Spaces.",
+    "interests_keywords": ["design", "UX", "AI", "tech meetups", "Lisbon events"],
+    "typical_day": {
+      "start_local": "09:30",
+      "end_local": "17:30",
+      "quiet_hours": "23:00–08:00"
+    }
+  },
+  "calendar": {
+    "items": [
+      {
+        "summary": "Freym Meeting",
+        "start": {"dateTime": "2025-01-27T09:30:00+01:00", "timeZone": "Europe/Lisbon"},
+        "end": {"dateTime": "2025-01-27T12:00:00+01:00", "timeZone": "Europe/Lisbon"},
+        "location": "AIhub by Unicorn Factory Lisboa"
+      }
+    ],
+    "free_windows_today": ["12:30-14:00", "18:30-20:00"],
+    "upcoming_7d": [
+      {"date": "2025-09-29", "title": "Freym sync w/ Johan", "location": "IDEA Spaces"},
+      {"date": "2025-10-01", "title": "AIhub meetup", "location": "Saldanha"}
+    ]
+  },
+  "limits": {
+    "max_news": 3,
+    "max_events": 3,
+    "max_suggestions": 3,
+    "max_reminders": 4
+  },
+  "now_iso": "2025-09-27T06:30:00Z"
+}
