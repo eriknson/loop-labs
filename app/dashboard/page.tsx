@@ -146,6 +146,23 @@ export default function Dashboard() {
               <p className="text-sm text-gray-600">Customize your preferences</p>
             </button>
           </div>
+<<<<<<< Updated upstream
+=======
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => router.push('/admin')}
+              className="text-sm text-gray-600 hover:text-black uppercase tracking-wide"
+            >
+              Admin
+            </button>
+            <button
+              onClick={handleSignOut}
+              className="text-sm text-gray-600 hover:text-black uppercase tracking-wide"
+            >
+              Sign Out
+            </button>
+          </div>
+>>>>>>> Stashed changes
         </div>
       </div>
     </div>
