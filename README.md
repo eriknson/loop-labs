@@ -2,13 +2,14 @@
 
 <img width="1978" height="1113" alt="loop-github-hero-final" src="https://github.com/user-attachments/assets/b4508e72-4ac3-4549-8e0d-ddb123865ccc" />
 
-Transform your calendar into a personalized life assistant powered by AI. Loop analyzes your schedule patterns and delivers intelligent insights, recommendations, and automated workflows.
+## Executive Summary
+_Loop is a calendar intelligence app that transforms raw events into clarity. By connecting your Google Calendar, it uncovers trends, insights, and working style to make calendar management personal._
 
-> **Built with Loveable**: Initial mockups and prototype were created using [Loveable](https://loveable.dev) - a powerful AI-powered development platform that helped accelerate the initial design and development process.
+_Each week, Loop weaves your schedule into a digestible storyline and suggests upcoming events tailored to your interests, so your calendar becomes more than a log — it becomes guidance._
 
-## ✨ Key Features
+## Key Features
 
-### 🧠 **AI Persona Generation**
+### 🧠 **Persona Generation**
 - GPT-4o analyzes your calendar patterns to create a unique personality profile
 - Identifies work-life balance, social patterns, and lifestyle insights
 - Powers personalized recommendations and insights
@@ -19,8 +20,8 @@ Transform your calendar into a personalized life assistant powered by AI. Loop a
 - Automatically adds compatible events to your calendar
 - Weekly organization with rich event details and source links
 
-### 🤖 **AI Agent Integration (Beyond Presence)**
-- Creates personalized AI agents named "Marcel" with Harrison avatar
+### 🤖 **AI Agent Integration feat. Beyond Presence**
+- Creates a personalized AI agent
 - Interactive conversational interface for digest exploration
 - PDF knowledge base generation for agent context
 - Video generation capabilities for enhanced digest delivery
@@ -28,7 +29,7 @@ Transform your calendar into a personalized life assistant powered by AI. Loop a
 
 ### 🎯 **Weekly Digest Generation**
 - AI-powered Sunday digest with personalized insights
-- Audio version with French accent voice (ElevenLabs)
+- Audio version with a French accent (ElevenLabs)
 - Real-time progress streaming during generation
 - Unique shareable links for each digest
 - Agent-powered interactive exploration
@@ -39,7 +40,7 @@ Transform your calendar into a personalized life assistant powered by AI. Loop a
 - Smart conflict resolution and placeholder management
 - AI agent creation and deployment
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: Next.js 15, React, TypeScript, Tailwind CSS
 - **AI**: OpenAI GPT-4o, GPT-5 (with web search)
@@ -50,7 +51,7 @@ Transform your calendar into a personalized life assistant powered by AI. Loop a
 - **Styling**: Tailwind CSS with responsive design
 - **Prototyping**: Initial mockups and prototype built with [Loveable](https://loveable.dev)
 
-## 🚀 Quick Start
+## Get Started
 
 1. **Clone and install**
    ```bash
@@ -80,13 +81,7 @@ Transform your calendar into a personalized life assistant powered by AI. Loop a
    
    Open `http://localhost:3000` (or the port shown in terminal)
 
-## 📱 Mobile-Friendly
-
-- Responsive design optimized for mobile devices
-- Clean two-row title layout: "Calendar In, Clarity Out"
-- Touch-friendly interface with proper spacing
-
-## 🔧 API Endpoints
+## API Endpoints
 
 - `GET /api/calendar` - Fetch calendar events
 - `POST /api/persona` - Generate AI persona
@@ -98,7 +93,7 @@ Transform your calendar into a personalized life assistant powered by AI. Loop a
 - `GET /api/digest/agent/data` - Fetch agent data and conversation
 - `POST /api/digest/agent/pdf` - Generate PDF knowledge base
 
-## 🎯 User Flow
+## User Flow
 
 1. **Connect Calendar** - Secure Google OAuth authentication
 2. **AI Analysis** - GPT-4o creates your personality profile
@@ -107,7 +102,7 @@ Transform your calendar into a personalized life assistant powered by AI. Loop a
 5. **Weekly Digest** - Personalized insights with audio playback
 6. **AI Agent Creation** - Beyond Presence creates "Marcel" agent for interactive exploration
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 loop-labs/
@@ -126,14 +121,14 @@ loop-labs/
 └── types/                   # TypeScript definitions
 ```
 
-## 🔐 Privacy & Security
+## Privacy & Security
 
 - Secure Google OAuth 2.0 authentication
 - Calendar data processed locally and securely
 - No data stored permanently
 - Transparent privacy policy
 
-## 📄 License
+## License
 
 MIT License - see [LICENSE](LICENSE) for details.
 
