@@ -1,6 +1,6 @@
 # Loop - AI-Powered Calendar Intelligence
 
-<img width="1978" height="1113" alt="loop-github-hero" src="https://github.com/user-attachments/assets/97dae94c-1786-4514-976b-9759d3a9cb28" />
+<img width="1978" height="1113" alt="loop-github-hero-final" src="https://github.com/user-attachments/assets/b4508e72-4ac3-4549-8e0d-ddb123865ccc" />
 
 Transform your calendar into a personalized life assistant powered by AI. Loop analyzes your schedule patterns and delivers intelligent insights, recommendations, and automated workflows.
 
