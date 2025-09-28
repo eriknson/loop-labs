@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import NumberFlow from '@number-flow/react';
-import { SuggestPanel } from '@/components/SuggestPanel';
 
 type StepStatus = 'pending' | 'active' | 'complete' | 'error';
 
@@ -87,8 +86,8 @@ const PIPELINE_TEMPLATE: Array<Omit<PipelineStep, 'status' | 'error'>> = [
   },
   {
     id: 'audio',
-    title: 'Generate Audio',
-    description: "Creating Marcel's voice with ElevenLabs",
+    title: 'Record Audio Digest',
+    description: "Generating Marcel's voice with ElevenLabs",
   },
   {
     id: 'agent',
@@ -102,8 +101,8 @@ const PIPELINE_TEMPLATE: Array<Omit<PipelineStep, 'status' | 'error'>> = [
   },
   {
     id: 'suggest',
-    title: 'Suggest Events',
-    description: 'Generating personalized event suggestions for the next 4 weeks',
+    title: 'Calendar Suggestions',
+    description: 'Optimizing your calendar with AI suggestions',
   },
 ];
 
@@ -141,28 +140,28 @@ const STEP_DESCRIPTIONS: Record<PipelineStepId, string[]> = {
     'Converting text to speech',
     'Adding French accent warmth',
     'Optimizing audio quality',
-    'Generated with ElevenLabs v3',
+    'Recorded with ElevenLabs v3',
   ],
   agent: [
     'Creating Marcel AI assistant with Beyond Presence',
-    'Configuring personal assistant capabilities',
-    'Setting up conversational AI with persona data',
-    'Generating unique agent URL',
-    'Ready for interactive conversations',
-  ],
-  suggest: [
-    'Analyzing your calendar patterns and interests',
-    'Finding free time slots in the next 4 weeks',
-    'Generating diverse event suggestions',
-    'Mixing public events, social activities, and personal activities',
-    'Generated with GPT-5',
+    'Building conversational AI from your digest',
+    'Training on your personal context',
+    'Enabling chat interactions',
+    'Powered by Beyond Presence API',
   ],
   event: [
     'Dropping everything into next Sunday with audio and agent links ready',
     'Calculating next Sunday at 3 PM',
     'Formatting the digest for calendar',
-    'Adding audio and agent links to description',
+    'Adding the audio and agent links to description',
     'Scheduled via Google Calendar API',
+  ],
+  suggest: [
+    'Optimizing your calendar with AI suggestions',
+    'Analyzing your schedule patterns',
+    'Finding optimization opportunities',
+    'Generating personalized recommendations',
+    'Powered by AI calendar analysis',
   ],
 };
 
@@ -209,9 +208,9 @@ function DashboardContent() {
   const [recommendations, setRecommendations] = useState<any | null>(null);
   const [digestResult, setDigestResult] = useState<DigestResult | null>(null);
   const [audioDataUrl, setAudioDataUrl] = useState<string | null>(null);
-  const [agentData, setAgentData] = useState<{agentId: string, agentUrl: string} | null>(null);
-  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [agentData, setAgentData] = useState<any | null>(null);
   const [calendarEvent, setCalendarEvent] = useState<any | null>(null);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
 
   const [isRunning, setIsRunning] = useState(false);
   const [pipelineError, setPipelineError] = useState<string | null>(null);
@@ -224,8 +223,8 @@ function DashboardContent() {
     digest: 0,
     audio: 0,
     agent: 0,
-    suggest: 0,
     event: 0,
+    suggest: 0,
   });
 
   const [expandedSteps, setExpandedSteps] = useState<Set<PipelineStepId>>(new Set());
@@ -404,83 +403,34 @@ function DashboardContent() {
           </div>
         ) : null;
       
+      case 'event':
+        return renderSafeContent(calendarEvent, 'Calendar Event Created');
+      
       case 'agent':
-        console.log('Rendering agent case, agentData:', agentData);
-        return agentData ? (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg w-full">
-            <h4 className="font-semibold mb-2">Marcel AI Assistant</h4>
-            <div className="mb-4">
-              <iframe
-                src={agentData.agentUrl}
-                style={{ 
-                  width: '100%', 
-                  height: '400px', 
-                  border: 'none', 
-                  borderRadius: '8px',
-                  backgroundColor: '#f9fafb'
-                }}
-                allow="camera; microphone; fullscreen"
-                allowFullScreen
-                title="Marcel AI Assistant"
-              />
-            </div>
-            <p className="text-xs text-gray-600 mb-2">Interactive AI assistant powered by Beyond Presence</p>
-            <div className="mt-2">
-              <a 
-                href={agentData.agentUrl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 text-sm underline"
-              >
-                Open Marcel in new tab
-              </a>
-            </div>
-          </div>
-        ) : (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg w-full">
-            <p className="text-gray-500">Agent not available yet...</p>
-          </div>
-        );
+        return renderSafeContent(agentData, 'AI Agent Created');
       
       case 'suggest':
         return suggestions.length > 0 ? (
           <div className="mt-4 p-4 bg-gray-50 rounded-lg w-full">
-            <h4 className="font-semibold mb-2">Suggested Events ({suggestions.length})</h4>
-            <div className="space-y-2 max-h-64 overflow-y-auto">
-              {suggestions.slice(0, 5).map((suggestion, index) => (
-                <div key={index} className="p-3 border rounded bg-white">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h5 className="font-medium text-sm">{suggestion.title}</h5>
-                    <span className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
-                      {suggestion.category}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-600 mb-1">
-                    {new Date(suggestion.startTime).toLocaleDateString()} at{' '}
-                    {new Date(suggestion.startTime).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </p>
-                  <p className="text-xs text-gray-500">{suggestion.reason}</p>
+            <h4 className="font-semibold mb-2">Calendar Suggestions</h4>
+            <p className="text-sm text-gray-600 mb-3">
+              Found {suggestions.length} optimization suggestions for your calendar
+            </p>
+            <div className="space-y-2">
+              {suggestions.slice(0, 3).map((suggestion: any, index: number) => (
+                <div key={index} className="p-2 bg-white rounded border">
+                  <p className="font-medium text-sm">{suggestion.title}</p>
+                  <p className="text-xs text-gray-600">{suggestion.reason}</p>
                 </div>
               ))}
-              {suggestions.length > 5 && (
-                <p className="text-xs text-gray-500 text-center">
-                  ... and {suggestions.length - 5} more suggestions
-                </p>
-              )}
             </div>
           </div>
         ) : null;
       
-      case 'event':
-        return renderSafeContent(calendarEvent, 'Calendar Event Created');
-      
       default:
         return null;
     }
-  }, [calendarPayload, persona, recommendations, digestResult, audioDataUrl, calendarEvent, renderSafeContent, renderRecommendationsContent]);
+  }, [calendarPayload, persona, recommendations, digestResult, audioDataUrl, calendarEvent, agentData, suggestions, renderSafeContent, renderRecommendationsContent]);
 
   useEffect(() => {
     const token = searchParams.get('access_token');
@@ -509,12 +459,12 @@ function DashboardContent() {
           localStorage.setItem('userName', userNameParam);
         }
 
-      const cleanUrl = new URL(window.location.href);
-      cleanUrl.searchParams.delete('access_token');
-      cleanUrl.searchParams.delete('refresh_token');
-      cleanUrl.searchParams.delete('user_email');
-      cleanUrl.searchParams.delete('user_name');
-      window.history.replaceState({}, '', cleanUrl.toString());
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete('access_token');
+        cleanUrl.searchParams.delete('refresh_token');
+        cleanUrl.searchParams.delete('user_email');
+        cleanUrl.searchParams.delete('user_name');
+        window.history.replaceState({}, '', cleanUrl.toString());
       }
 
       return;
@@ -549,16 +499,11 @@ function DashboardContent() {
 
     // Start description animation for this step
     const descriptions = STEP_DESCRIPTIONS[stepId];
-    if (!descriptions || descriptions.length === 0) {
-      console.warn(`No descriptions found for step: ${stepId}`);
-      return await action();
-    }
-    
     let descriptionIndex = 0;
     
     const descriptionInterval = setInterval(() => {
       setActiveStepDescriptions(prev => ({
-        ...(prev || {}),
+        ...prev,
         [stepId]: descriptionIndex
       }));
       descriptionIndex = (descriptionIndex + 1) % descriptions.length;
@@ -613,7 +558,7 @@ function DashboardContent() {
     }
   }, []);
 
-  const buildEventDescription = useCallback((content: string, audioPageUrl: string, agentUrl?: string, agentId?: string) => {
+  const buildEventDescription = useCallback((content: string, audioPageUrl: string, agentUrl?: string) => {
     const absoluteAudioUrl =
       typeof window !== 'undefined'
         ? audioPageUrl.startsWith('http')
@@ -621,20 +566,18 @@ function DashboardContent() {
           : `${window.location.origin}${audioPageUrl}`
         : audioPageUrl;
 
-    let withAudioLink = content.includes('🎧 Listen To Your Digest:')
+    const withAudioLink = content.includes('🎧 Listen To Your Digest:')
       ? content.replace(
           /🎧 Listen To Your Digest: (\/digest\/[^\s]+)/g,
           `🎧 Listen To Your Digest: ${absoluteAudioUrl}`
         )
       : `🎧 Listen To Your Digest: ${absoluteAudioUrl}\n\n${content}`;
 
-    // Add agent link if available (with fallback to build from agentId)
-    const finalAgentUrl = agentUrl || (agentId ? `https://bey.chat/${agentId}` : null);
-    if (finalAgentUrl) {
-      withAudioLink = `🤖 Chat with Marcel: ${finalAgentUrl}\n\n${withAudioLink}`;
-    }
+    const withAgentLink = agentUrl 
+      ? `${withAudioLink}\n\n🤖 Chat with Marcel: ${agentUrl}`
+      : withAudioLink;
 
-    return withAudioLink.replace(/https?:\/\/[^\s]+/g, (url) => {
+    return withAgentLink.replace(/https?:\/\/[^\s]+/g, (url) => {
       try {
         const domain = new URL(url).hostname.replace('www.', '');
         return `${domain}: ${url}`;
@@ -666,18 +609,18 @@ function DashboardContent() {
 
     try {
       const calendar = await executeStep('calendar', async () => {
-      const response = await fetch(
-        `/api/calendar?accessToken=${encodeURIComponent(accessToken)}&monthsBack=6&insights=true`
-      );
+        const response = await fetch(
+          `/api/calendar?accessToken=${encodeURIComponent(accessToken)}&monthsBack=6&insights=true`
+        );
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
 
-        if (response.status === 401 || response.status === 403) {
+          if (response.status === 401 || response.status === 403) {
             if (typeof window !== 'undefined') {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('userEmail');
-          localStorage.removeItem('userName');
+              localStorage.removeItem('accessToken');
+              localStorage.removeItem('userEmail');
+              localStorage.removeItem('userName');
             }
 
             router.push('/');
@@ -697,25 +640,25 @@ function DashboardContent() {
         }
 
         return await retryWithBackoff(async () => {
-      const response = await fetch('/api/persona', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          calendarData: {
-            now_iso: new Date().toISOString(),
-            default_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            calendars: [{ id: 'primary', summary: 'Primary Calendar' }],
+          const response = await fetch('/api/persona', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              calendarData: {
+                now_iso: new Date().toISOString(),
+                default_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                calendars: [{ id: 'primary', summary: 'Primary Calendar' }],
                 events: calendar.minified,
-          },
-        }),
-      });
+              },
+            }),
+          });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || errorData.details || 'Failed to generate persona');
-      }
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || errorData.details || 'Failed to generate persona');
+          }
 
           return await response.json();
         });
@@ -753,98 +696,90 @@ function DashboardContent() {
           return recommendationsPayload;
         }),
         executeStep('digest', async () => {
-          const response = await fetch('/api/digest', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              personaText: JSON.stringify(personaData, null, 2),
-              recentCalendarJson: JSON.stringify(calendar.minified, null, 2),
-              promptTemplate:
-                'Run the Sunday digest.\n\nPersona description:\n{{persona_text}}\n\nRecent Calendar JSON:\n{{recent_calendar_json}}',
-            }),
-          });
+        const response = await fetch('/api/digest', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            personaText: JSON.stringify(personaData, null, 2),
+            recentCalendarJson: JSON.stringify(calendar.minified, null, 2),
+            promptTemplate:
+              'Run the Sunday digest.\n\nPersona description:\n{{persona_text}}\n\nRecent Calendar JSON:\n{{recent_calendar_json}}',
+          }),
+        });
 
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.error || errorData.details || 'Failed to generate digest');
-          }
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || errorData.details || 'Failed to generate digest');
+        }
 
-          const digestPayload: DigestResult = await response.json();
-          setDigestResult(digestPayload);
-          return digestPayload;
+        const digestPayload: DigestResult = await response.json();
+        setDigestResult(digestPayload);
+        return digestPayload;
         }),
       ]);
 
-      // Start audio and agent in parallel after digest is complete
-      const [audioResult, agentResult] = await Promise.all([
-        executeStep('audio', async () => {
-          const response = await fetch('/api/digest/audio/generate', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              digestId: digest.digestId,
-              content: digest.content,
-            }),
-          });
+      await executeStep('audio', async () => {
+        const response = await fetch('/api/digest/audio/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            digestId: digest.digestId,
+            content: digest.content,
+          }),
+        });
 
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.error || 'Failed to generate audio');
-          }
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Failed to generate audio');
+        }
 
-          const audioPayload: AudioGenerationResult = await response.json();
-          setAudioDataUrl(audioPayload.audioUrl);
-          return audioPayload;
-        }),
-        
-        executeStep('agent', async () => {
-          const response = await fetch('/api/digest/agent/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-              digestId: digest.digestId,
-              digestContent: digest.content,
-              persona: personaData,
-              calendarData: calendar.minified,
-        }),
+        const audioPayload: AudioGenerationResult = await response.json();
+        setAudioDataUrl(audioPayload.audioUrl);
+        return audioPayload;
       });
 
-      if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.warn('Agent creation failed:', errorData.error);
-            // Don't throw error for agent failure, just return null
-            return null;
-          }
+      // Create AI agent after audio is generated
+      await executeStep('agent', async () => {
+        const response = await fetch('/api/digest/agent/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            digestId: digest.digestId,
+            content: digest.content,
+            audioUrl: audioDataUrl,
+          }),
+        });
 
-          const agentPayload = await response.json();
-          console.log('Agent created successfully:', agentPayload);
-          setAgentData({ agentId: agentPayload.agentId, agentUrl: agentPayload.agentUrl });
-          console.log('Agent data set:', { agentId: agentPayload.agentId, agentUrl: agentPayload.agentUrl });
-          return agentPayload;
-        })
-      ]);
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          console.warn('Agent creation failed:', errorData.error);
+          // Don't throw error for agent failure, just return null
+          return null;
+        }
 
-      // Schedule digest session immediately after audio and agent are done
+        const agentPayload = await response.json();
+        setAgentData(agentPayload);
+        return agentPayload;
+      });
+
       await executeStep('event', async () => {
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const now = new Date();
-      const daysUntilSunday = (7 - now.getDay()) % 7;
-      const nextSunday = new Date(now);
-      nextSunday.setDate(now.getDate() + (daysUntilSunday === 0 ? 7 : daysUntilSunday));
-      nextSunday.setHours(15, 0, 0, 0);
+        const now = new Date();
+        const daysUntilSunday = (7 - now.getDay()) % 7;
+        const nextSunday = new Date(now);
+        nextSunday.setDate(now.getDate() + (daysUntilSunday === 0 ? 7 : daysUntilSunday));
+        nextSunday.setHours(15, 0, 0, 0);
 
-        // Use immediately returned agentResult to avoid state timing issues
         const description = buildEventDescription(
-          digest.content,
+          digest.content, 
           digest.audioUrl,
-          (agentResult && 'agentUrl' in (agentResult as any)) ? (agentResult as any).agentUrl : agentData?.agentUrl,
-          (agentResult && 'agentId' in (agentResult as any)) ? (agentResult as any).agentId : agentData?.agentId
+          agentData?.agentUrl
         );
 
         // Create digest event
@@ -870,75 +805,6 @@ function DashboardContent() {
           body: JSON.stringify({
             accessToken,
             eventData: digestEventData,
-          }),
-        });
-
-        if (!digestResponse.ok) {
-          const errorData = await digestResponse.json().catch(() => ({}));
-          throw new Error(errorData.error || 'Failed to create digest calendar event');
-        }
-
-        const digestEvent = await digestResponse.json();
-        setCalendarEvent(digestEvent.event);
-
-        // Create recommendation events if any
-        if (recommendationsData?.recommendations?.length > 0) {
-          const recommendationEvents = [];
-          
-          for (const week of recommendationsData.recommendations) {
-            for (const rec of week.recommendations) {
-              const eventData = {
-                summary: rec.title,
-                description: `${rec.description}\n\nLocation: ${rec.location}\nCost: ${rec.cost}\nRegistration Required: ${rec.registration_required ? 'Yes' : 'No'}\nSource: ${rec.source_url}`,
-                location: rec.location,
-                start: {
-                  dateTime: `${rec.date}T${rec.start_time}:00`,
-                  timeZone: timezone,
-                },
-                end: {
-                  dateTime: `${rec.date}T${rec.end_time}:00`,
-                  timeZone: timezone,
-                },
-              };
-
-              try {
-                const recResponse = await fetch('/api/calendar', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    accessToken,
-                    eventData,
-                  }),
-                });
-
-                if (recResponse.ok) {
-                  const recEvent = await recResponse.json();
-                  recommendationEvents.push(recEvent.event);
-                }
-              } catch (error) {
-                console.warn('Failed to create recommendation event:', error);
-              }
-            }
-          }
-
-          console.log(`Created ${recommendationEvents.length} recommendation events`);
-        }
-
-        return digestEvent.event;
-      });
-
-      // Generate suggestions independently after digest session is scheduled
-      await executeStep('suggest', async () => {
-        const response = await fetch('/api/suggest/generate', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            persona: personaData,
-            calendarData: calendar.minified,
           }),
         });
 
@@ -997,6 +863,20 @@ function DashboardContent() {
         }
 
         return digestResult.event;
+      });
+
+      // Generate suggestions independently after digest session is scheduled
+      await executeStep('suggest', async () => {
+        const response = await fetch('/api/suggest/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            persona: personaData,
+            calendarData: calendar.minified,
+          }),
+        });
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
@@ -1006,38 +886,7 @@ function DashboardContent() {
         }
 
         const suggestPayload = await response.json();
-        const suggestionsWithIds = suggestPayload.suggestions?.map((suggestion: any, index: number) => ({
-          ...suggestion,
-          id: `suggestion_${Date.now()}_${index}`,
-          selected: true, // Default to selected
-        })) || [];
-        
-        setSuggestions(suggestionsWithIds);
-
-        // Automatically add all suggestions to calendar
-        if (suggestionsWithIds.length > 0 && accessToken) {
-          try {
-            console.log('Automatically adding', suggestionsWithIds.length, 'suggested events to calendar...');
-            const addResponse = await fetch('/api/suggest/write', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                suggestions: suggestionsWithIds,
-                accessToken,
-              }),
-            });
-
-            if (addResponse.ok) {
-              const addData = await addResponse.json();
-              console.log(`Successfully added ${addData.createdEvents} events to calendar automatically`);
-            } else {
-              const errorData = await addResponse.json().catch(() => ({}));
-              console.warn('Failed to auto-add events:', errorData.error);
-            }
-          } catch (error) {
-            console.warn('Error auto-adding events:', error);
-          }
-        }
+        setSuggestions(suggestPayload.suggestions || []);
 
         return suggestPayload;
       });
@@ -1358,8 +1207,8 @@ function DashboardContent() {
               <path d="M7.61523 7.28711C9.63867 7.28711 11.2656 5.64648 11.2656 3.63672C11.2656 1.62695 9.63867 0 7.61523 0C5.60547 0 3.97852 1.62695 3.97852 3.63672C3.97852 5.64648 5.60547 7.28711 7.61523 7.28711ZM7.61523 5.30469C6.69922 5.30469 5.94727 4.55273 5.94727 3.63672C5.94727 2.7207 6.69922 1.96875 7.61523 1.96875C8.54492 1.96875 9.29688 2.7207 9.29688 3.63672C9.29688 4.55273 8.54492 5.30469 7.61523 5.30469ZM15.5996 7.28711C17.6094 7.28711 19.2363 5.64648 19.2363 3.63672C19.2363 1.62695 17.6094 0 15.5996 0C13.5898 0 11.9492 1.62695 11.9492 3.63672C11.9492 5.64648 13.5898 7.28711 15.5996 7.28711ZM15.5996 5.30469C14.6836 5.30469 13.9316 4.55273 13.9316 3.63672C13.9316 2.7207 14.6836 1.96875 15.5996 1.96875C16.5156 1.96875 17.2676 2.7207 17.2676 3.63672C17.2676 4.55273 16.5156 5.30469 15.5996 5.30469ZM3.65039 14.4102C5.66016 14.4102 7.28711 12.7695 7.28711 10.7598C7.28711 8.75 5.66016 7.10938 3.65039 7.10938C1.62695 7.10938 0 8.75 0 10.7598C0 12.7695 1.62695 14.4102 3.65039 14.4102ZM3.65039 12.4277C2.7207 12.4277 1.96875 11.6758 1.96875 10.7598C1.96875 9.84375 2.7207 9.0918 3.65039 9.0918C4.56641 9.0918 5.31836 9.84375 5.31836 10.7598C5.31836 11.6758 4.56641 12.4277 3.65039 12.4277ZM19.5781 14.4102C21.5879 14.4102 23.2148 12.7695 23.2148 10.7598C23.2148 8.75 21.5879 7.10938 19.5781 7.10938C17.5684 7.10938 15.9277 8.75 15.9277 10.7598C15.9277 12.7695 17.5684 14.4102 19.5781 14.4102ZM19.5781 12.4277C18.6484 12.4277 17.8965 11.6758 17.8965 10.7598C17.8965 9.84375 18.6484 9.0918 19.5781 9.0918C20.4941 9.0918 21.2461 9.84375 21.2461 10.7598C21.2461 11.6758 20.4941 12.4277 19.5781 12.4277ZM7.61523 21.5332C9.63867 21.5332 11.2656 19.9062 11.2656 17.8965C11.2656 15.8867 9.63867 14.2461 7.61523 14.2461C5.60547 14.2461 3.97852 15.8867 3.97852 17.8965C3.97852 19.9062 5.60547 21.5332 7.61523 21.5332ZM7.61523 19.5645C6.69922 19.5645 5.94727 18.8125 5.94727 17.8965C5.94727 16.9805 6.69922 16.2285 7.61523 16.2285C8.54492 16.2285 9.29688 16.9805 9.29688 17.8965C9.29688 18.8125 8.54492 19.5645 7.61523 19.5645ZM15.5996 21.5332C17.6094 21.5332 19.2363 19.9062 19.2363 17.8965C19.2363 15.8867 17.6094 14.2461 15.5996 14.2461C13.5898 14.2461 11.9492 15.8867 11.9492 17.8965C11.9492 19.9062 13.5898 21.5332 15.5996 21.5332ZM15.5996 19.5645C14.6836 19.5645 13.9316 18.8125 13.9316 17.8965C13.9316 16.9805 14.6836 16.2285 15.5996 16.2285C16.5156 16.2285 17.2676 16.9805 17.2676 17.8965C17.2676 18.8125 16.5156 19.5645 15.5996 19.5645Z"/>
             </svg>
             <span className="text-xl font-bold text-black">Loop</span>
-            </div>
           </div>
+        </div>
       </header>
 
       <style jsx>{`
@@ -1414,13 +1263,13 @@ function DashboardContent() {
             <div className="mb-6 space-y-2">
               <h1 className="text-2xl font-semibold text-black">{headline}</h1>
               {supportingLine && <p className="text-sm text-gray-600">{supportingLine}</p>}
-        </div>
+            </div>
           )}
 
           {pipelineError ? (
             <div className="mb-6 rounded-lg border border-red-500 bg-red-50 px-4 py-3 text-sm text-red-600">
               {pipelineError}
-      </div>
+            </div>
           ) : null}
 
           <ul className="space-y-3">
@@ -1446,16 +1295,8 @@ function DashboardContent() {
                                (step.id === 'digest' && digestResult) ||
                                (step.id === 'audio' && audioDataUrl) ||
                                (step.id === 'agent' && agentData) ||
-                               (step.id === 'suggest' && suggestions.length > 0) ||
-                               (step.id === 'event' && calendarEvent);
-              
-              if (step.id === 'agent') {
-                console.log('Agent step hasContent check:', { 
-                  stepId: step.id, 
-                  agentData, 
-                  hasContent 
-                });
-              }
+                               (step.id === 'event' && calendarEvent) ||
+                               (step.id === 'suggest' && suggestions.length > 0);
 
               return (
                 <li key={step.id}>
@@ -1482,7 +1323,7 @@ function DashboardContent() {
                         />
                         {step.error ? (
                           <p className="text-sm font-medium text-red-600">{step.error}</p>
-        ) : null}
+                        ) : null}
                       </div>
                       <StepStatusIcon status={step.status} />
                     </div>
@@ -1498,64 +1339,15 @@ function DashboardContent() {
             })}
           </ul>
 
-          {/* Suggest Panel */}
-          {pipelineComplete && suggestions.length > 0 && (
-            <div className="mt-8">
-              <SuggestPanel
-                persona={persona}
-                calendarPayload={calendarPayload}
-                accessToken={accessToken}
-                onGenerate={() => {}} // Already generated in pipeline
-                onAddToCalendar={() => {}} // Already added automatically
-                onUndo={async () => {
-                  // Optimistic UI: show removing state immediately
-                  setActiveStepDescriptions((prev) => ({ ...prev, suggest: 4 }));
-                  try {
-                    // Set temporary loading flag by toggling local copy
-                    const undoBtn = document.activeElement as HTMLButtonElement | null;
-                    if (undoBtn) undoBtn.disabled = true;
-
-                    const response = await fetch('/api/suggest/undo', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ accessToken }),
-                    });
-
-                    if (!response.ok) {
-                      const errorData = await response.json().catch(() => ({}));
-                      throw new Error(errorData.error || 'Failed to undo events');
-                    }
-
-                    const data = await response.json();
-                    // Immediate visual feedback
-                    setSuggestions([]);
-                    alert(`Successfully removed ${data.deletedEvents} events and cleaned up Autoplan calendar!`);
-                  } catch (err) {
-                    console.error('Undo failed:', err);
-                    alert(err instanceof Error ? err.message : 'Failed to undo events');
-                  } finally {
-                    setActiveStepDescriptions((prev) => ({ ...prev, suggest: 0 }));
-                  }
-                }}
-                isGenerating={false}
-                isAddingToCalendar={false}
-                isUndoing={false}
-                suggestions={suggestions}
-                onToggleSuggestion={() => {}} // No longer needed since events are auto-added
-                autoAdded={true}
-              />
-            </div>
-          )}
-
           <div className="mt-6">
             {hasFailure ? (
-            <button
+              <button
                 type="button"
                 onClick={runPipeline}
                 className="minimal-button"
               >
                 Retry Pipeline
-            </button>
+              </button>
             ) : pipelineComplete ? (
               <a
                 href="https://calendar.google.com"
@@ -1572,7 +1364,7 @@ function DashboardContent() {
                 Open Calendar
               </a>
             ) : null}
-            </div>
+          </div>
         </div>
       </main>
     </div>
