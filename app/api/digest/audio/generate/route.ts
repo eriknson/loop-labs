@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { storeDigest, updateDigestAudio } from '@/lib/digest-storage';
+import { storeDigest, updateDigestAudio, setDigestAudioUrl } from '@/lib/digest-storage';
 
 export async function POST(request: NextRequest) {
   try {
@@ -64,8 +64,14 @@ export async function POST(request: NextRequest) {
 
     // Update digest with audio URL
     updateDigestAudio(digestId, audioDataUrl);
-
     storeDigest(digestId, content, audioDataUrl);
+
+    // Persist audio URL to digest storage so it can be reused later without regeneration
+    try {
+      setDigestAudioUrl(digestId, audioDataUrl);
+    } catch (e) {
+      console.warn('Unable to persist audio URL to digest storage:', e);
+    }
 
     return NextResponse.json({
       audioUrl: audioDataUrl,
