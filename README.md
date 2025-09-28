@@ -1,5 +1,7 @@
 # Loop - AI-Powered Calendar Intelligence Platform
 
+<img width="1675" height="1042" alt="Screenshot 2025-09-28 at 14 31 00" src="https://github.com/user-attachments/assets/dec1e951-cb97-4c22-aff4-47540ca52419" />
+
 Transform your calendar from a scheduling tool into a personalized life assistant powered by AI.
 
 ## 🚀 Features
