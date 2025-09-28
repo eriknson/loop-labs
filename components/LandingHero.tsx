@@ -186,8 +186,8 @@ export default function LandingHero() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center pt-20">
         {/* Main Title */}
-        <div className="text-center mb-12 relative z-10">
-          <h1 className="text-6xl md:text-7xl font-bold text-black leading-tight">
+        <div className="text-center mb-12 relative z-10 px-4">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-black leading-tight">
             Calendar In,<br />
             Clarity Out
           </h1>
