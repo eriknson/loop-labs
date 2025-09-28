@@ -48,7 +48,7 @@ Transform your calendar into a personalized life assistant powered by AI. Loop a
 - **Calendar**: Google Calendar API
 - **Audio**: ElevenLabs v3 Alpha API
 - **Styling**: Tailwind CSS with responsive design
-- **Development**: Built with [Loveable](https://loveable.dev) for rapid prototyping
+- **Prototyping**: Initial mockups and prototype built with [Loveable](https://loveable.dev)
 
 ## 🚀 Quick Start
 
